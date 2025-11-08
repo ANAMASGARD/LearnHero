@@ -8,37 +8,36 @@ import {
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem
+  SidebarMenuButton,
+  SidebarMenuItem
 
 } from "@/components/ui/sidebar"
-import { BookA, Compass, LayoutDashboard, PencilRulerIcon, UserCircle2Icon, WalletCards } from "lucide-react"
+import Image from "next/image"
+import { usePathname } from "next/navigation"
+
+import { BookA, Compass, LayoutDashboard, PencilRulerIcon, UserCircle2Icon,User2Icon , WalletCards ,Video , List } from "lucide-react"
 import Link from "next/link"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
 
-import Image from "next/image"
-import { usePathname } from "next/navigation"
-import AddNewCourseDialog from "./AddNewCourseDialog"
+// import AddNewCourseDialog from "./AddNewCourseDialog"
 
 const SidebarOptions = [ {
     title: "Dashboard",
     icon:LayoutDashboard,
-    path:'/workspace/#',
+    path:'/dashboard/#',
 },
 {
-    title: "My Learning",
-    icon: BookA,
+    title: "Interviews",
+    icon: Video,
     path:'/workspace/my-learning',
-},{
-    title: "Explore Courses",
-    icon:Compass,
-    path:'/workspace/explore',
-},{
-    title: "AI Tools",
-    icon: PencilRulerIcon,
-    path:'/dashboard',
-},{
+},
+ {
+    title:'All Interview',
+    icon:List,
+    path:'/recruiter/all-interview',
+},
+{
     title: "Billing",
     icon:WalletCards,
     path:'/workspace/billing',
@@ -49,9 +48,8 @@ const SidebarOptions = [ {
 },
 ]
 
-export function AppSidebar() {
-
-    const path=usePathname();
+export function NewAppSidebar() {
+   const path=usePathname();
 
   return (
     <Sidebar>
@@ -67,11 +65,11 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup >
-            <AddNewCourseDialog>
+            {/* <AddNewCourseDialog> */}
          <Button>
-            Create New Course
+            Create Mock Test 
          </Button>
-         </AddNewCourseDialog>
+         {/* </AddNewCourseDialog> */}
 
             </SidebarGroup>
         <SidebarGroup >
@@ -103,3 +101,5 @@ export function AppSidebar() {
     </Sidebar>
   )
 }
+
+export default NewAppSidebar
