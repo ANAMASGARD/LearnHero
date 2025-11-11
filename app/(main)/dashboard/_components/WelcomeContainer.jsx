@@ -7,7 +7,7 @@ function WelcomeContainer() {
     const { user } = useUser();
 
     return (
-        <header className="flex items-center justify-between p-4 md:p-6 bg-white/90 backdrop-blur-sm border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 sticky top-4 z-50 mx-4 mb-4">
+        <header className="flex items-center justify-between p-4 md:p-5 bg-white/90 backdrop-blur-sm border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 sticky top-4 z-50 mx-4 mb-4">
             {/* Left side - Welcome text */}
             <div className="flex-1 min-w-0">
                 <h1 className="text-lg md:text-xl font-semibold text-gray-900 truncate">
@@ -23,7 +23,7 @@ function WelcomeContainer() {
                 <UserButton
                     appearance={{
                         elements: {
-                            avatarBox: "w-8 h-8 md:w-10 md:h-10"
+                            avatarBox: "w-8 h-6 md:w-10 md:h-10"
                         }
                     }}
                 />
