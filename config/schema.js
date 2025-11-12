@@ -1,4 +1,4 @@
-import { boolean, integer, json, pgTable, varchar } from "drizzle-orm/pg-core";
+import { boolean, integer, json, pgTable, varchar, timestamp, text } from "drizzle-orm/pg-core";
 
 export const usersTable = pgTable("users", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -28,4 +28,27 @@ export const enrollCourseTable = pgTable("enrollCourses", {
   cid: varchar('cid').references(() => coursesTable.cid),
   userEmail: varchar('userEmail').references(() => usersTable.email),
   completedChapters: json(),
+});
+
+// Interview Tables
+export const interviewsTable = pgTable("interviews", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  interview_id: varchar({ length: 255 }).notNull().unique(),
+  jobPosition: varchar({ length: 255 }).notNull(),
+  jobDescription: text(),
+  duration: varchar({ length: 50 }),
+  type: json(), // Array of interview types
+  questionList: json(), // Generated questions
+  createdBy: varchar('createdBy').references(() => usersTable.email).notNull(),
+  createdAt: timestamp().defaultNow(),
+});
+
+export const interviewResultsTable = pgTable("interview_results", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  interview_id: varchar('interview_id').references(() => interviewsTable.interview_id).notNull(),
+  fullname: varchar({ length: 255 }).notNull(),
+  email: varchar({ length: 255 }).notNull(),
+  conversation_transcript: json(),
+  feedback: json(), // Ratings and recommendations
+  completed_at: timestamp().defaultNow(),
 });

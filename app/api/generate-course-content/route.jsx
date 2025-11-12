@@ -34,7 +34,7 @@ export async function POST(req) {
                 const config = {
                     responseMimeType: 'text/plain',
                 };
-                const model = 'gemini-2.5-flash-preview-05-20';
+                const model = 'gemini-2.5-flash';
                 const contents = [
                     {
                         role: 'user',
@@ -54,6 +54,8 @@ export async function POST(req) {
 //    console.log(response.candidates[0].content.parts[0].text);
    const RawResp = response.candidates[0].content.parts[0].text;
    
+   console.log('Raw Gemini response:', RawResp);
+   
    // Enhanced JSON cleaning to fix parsing errors
    let cleanJson = RawResp
      .replace(/```json/gi, '')
@@ -69,22 +71,38 @@ export async function POST(req) {
      cleanJson = cleanJson.substring(firstBrace, lastBrace + 1);
    }
    
+   console.log('Cleaned JSON:', cleanJson);
+   
    // Try to parse JSON with error handling
    let JSONResp;
    try {
      JSONResp = JSON.parse(cleanJson);
+     console.log('Successfully parsed JSON for chapter:', chapter?.chapterName);
    } catch (parseError) {
      console.error('JSON Parse Error for chapter:', chapter?.chapterName, parseError);
      console.error('Problematic JSON:', cleanJson);
      
-     // Fallback: Create basic structure if parsing fails
-     JSONResp = {
-       chapterName: chapter?.chapterName,
-       topics: chapter?.topics?.map(topic => ({
-         topic: topic,
-         content: `Content for ${topic} will be generated. Please try again.`
-       })) || []
-     };
+     // Try alternative parsing - sometimes Gemini returns array directly
+     try {
+       // Check if it's wrapped in extra structure
+       const alternativeMatch = cleanJson.match(/\{[\s\S]*"topics"[\s\S]*\}/);
+       if (alternativeMatch) {
+         JSONResp = JSON.parse(alternativeMatch[0]);
+         console.log('Parsed with alternative method');
+       } else {
+         throw new Error('Could not extract JSON');
+       }
+     } catch (altError) {
+       console.error('Alternative parsing also failed');
+       // Fallback: Create basic structure if parsing fails
+       JSONResp = {
+         chapterName: chapter?.chapterName,
+         topics: chapter?.topics?.map(topic => ({
+           topic: topic,
+           content: `<h2>${topic}</h2><p>Content generation failed. Please regenerate this chapter.</p>`
+         })) || []
+       };
+     }
    }
 
   // GET THE  YOUTUBE VIDEO ALSO 
@@ -139,24 +157,38 @@ export async function POST(req) {
     }
 }
 const YOUTUBE_BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
-const GetYoutubeVideo= async  (topic ) => {
-      const params = {
-        part: 'snippet',
-        q: topic,
-        maxResults: 4,
-        type: 'video',
-        key: process.env.YOUTUBE_API_KEY,
-      };
-      const resp = await axios.get(YOUTUBE_BASE_URL, { params });
-      const  youtubeVideoListResp = resp.data.items;
-      const youtubeVideoList = [];
-        youtubeVideoListResp.forEach(item  => {
-            const data ={
+const GetYoutubeVideo = async (topic) => {
+    try {
+        // Check if YouTube API key exists
+        if (!process.env.YOUTUBE_API_KEY) {
+            console.warn('YouTube API key not configured');
+            return [];
+        }
+
+        const params = {
+            part: 'snippet',
+            q: topic,
+            maxResults: 4,
+            type: 'video',
+            key: process.env.YOUTUBE_API_KEY,
+        };
+        
+        const resp = await axios.get(YOUTUBE_BASE_URL, { params });
+        const youtubeVideoListResp = resp.data.items || [];
+        const youtubeVideoList = [];
+        
+        youtubeVideoListResp.forEach(item => {
+            const data = {
                 videoId: item.id?.videoId,
                 title: item?.snippet?.title,
             }
             youtubeVideoList.push(data);
         });
-        console.log("youtubeVideoList" , youtubeVideoList);
-      return resp.data.items;
+        
+        console.log("youtubeVideoList", youtubeVideoList);
+        return resp.data.items;
+    } catch (error) {
+        console.error('YouTube API error:', error);
+        return []; // Return empty array on error
     }
+}

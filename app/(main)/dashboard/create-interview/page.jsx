@@ -5,6 +5,9 @@ import WelcomeContainer from '../_components/WelcomeContainer'
 import { useRouter } from 'next/navigation'
 import { Progress } from '@/components/ui/progress'
 import FormContainer from './_components/FormContainer'
+import QuestionList from './_components/QuestionList'
+import InterviewLink from './_components/InterviewLink'
+import axios from 'axios'
 
 function CreateInterview() {
   const router = useRouter();  
@@ -23,6 +26,8 @@ function CreateInterview() {
     }));
   };
 
+  const [interviewId, setInterviewId] = useState(null);
+
   const goToNext = () => {
     // Validate form data
     if (!formData.jobPosition || !formData.jobDescription || !formData.duration || formData.type.length === 0) {
@@ -31,8 +36,11 @@ function CreateInterview() {
     }
     
     setStep(2);
-    console.log('Form Data:', formData);
-    // Add your next step logic here
+  };
+
+  const onCreateLink = (interview_id) => {
+    setInterviewId(interview_id);
+    setStep(3);
   };
 
   return (
@@ -44,10 +52,28 @@ function CreateInterview() {
           <h2 className='font-bold text-2xl'>Create New Interview</h2>
         </div>
         <Progress value={step * 33.33} className='my-5' />
-        <FormContainer 
-          onHandleInputChange={handleInputChange}
-          GoToNext={goToNext}
-        /> 
+        
+        {step === 1 && (
+          <FormContainer 
+            onHandleInputChange={handleInputChange}
+            GoToNext={goToNext}
+          />
+        )}
+        
+        {step === 2 && (
+          <QuestionList 
+            formData={formData}
+            onCreateLink={onCreateLink}
+            loading={false}
+          />
+        )}
+        
+        {step === 3 && interviewId && (
+          <InterviewLink 
+            interview_id={interviewId}
+            formData={formData}
+          />
+        )} 
       </div>
     </div>
   )
