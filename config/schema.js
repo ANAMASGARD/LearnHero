@@ -20,6 +20,7 @@ export const coursesTable = pgTable("courses", {
   category: varchar(),
   courseJson: json(),
   courseContent: json().default({}),
+  courseImage: varchar(), // Dynamic course image URL from Unsplash
   userEmail: varchar('userEmail').references(() => usersTable.email).notNull(),
 });
 
