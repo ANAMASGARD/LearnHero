@@ -4,6 +4,9 @@ import { NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { checkSubscriptionLimit } from "@/lib/subscription";
 
+// Force dynamic rendering to avoid build-time database connection
+export const dynamic = 'force-dynamic';
+
 export async function POST(request) {
     try {
         const { userId } = await auth();

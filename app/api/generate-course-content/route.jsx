@@ -4,6 +4,9 @@ import axios from 'axios';
 import { db } from '@/config/db';
 import { eq } from 'drizzle-orm';
 import { coursesTable } from '@/config/schema';
+
+// Force dynamic rendering to avoid build-time database connection
+export const dynamic = 'force-dynamic';
 // 2,57,15
 const PROMPT = `Generate content for each topic in HTML format based on the Chapter name and Topics provided.
 

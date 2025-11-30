@@ -3,6 +3,9 @@ import { interviewsTable } from "@/config/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
+// Force dynamic rendering to avoid build-time database connection
+export const dynamic = 'force-dynamic';
+
 export async function GET(request, { params }) {
     try {
         // Await params in Next.js 15+

@@ -3,6 +3,9 @@ import { interviewResultsTable } from "@/config/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
+// Force dynamic rendering to avoid build-time database connection
+export const dynamic = 'force-dynamic';
+
 export async function DELETE(request, { params }) {
     try {
         const { id } = await params;

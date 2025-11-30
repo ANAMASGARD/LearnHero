@@ -2,6 +2,9 @@ import { db } from '@/config/db';
 import { coursesTable } from '@/config/schema';
 
 import { currentUser } from '@clerk/nextjs/server';
+
+// Force dynamic rendering to avoid build-time database connection
+export const dynamic = 'force-dynamic';
 import {
   GoogleGenAI,
 } from '@google/genai';

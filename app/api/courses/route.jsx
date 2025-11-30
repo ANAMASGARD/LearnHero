@@ -5,6 +5,9 @@ import { and, desc, eq, sql } from 'drizzle-orm';
 import { currentUser } from '@clerk/nextjs/server';
 import { checkSubscriptionLimit } from '@/lib/subscription';
 
+// Force dynamic rendering to avoid build-time database connection
+export const dynamic = 'force-dynamic';
+
 export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const courseId = searchParams?.get('courseId');
