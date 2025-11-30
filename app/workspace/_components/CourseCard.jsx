@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import Link from 'next/link'; // Correct import for Next.js Link
+import Link from 'next/link';
+import DeleteCourseButton from './DeleteCourseButton';
 
-function CourseCard({course}) {
+function CourseCard({course, refreshData}) {
   const courseJson = course?.courseJson?.course;
   const [loading, setLoading] = useState(false);
   const onEnrollCourse = async () => {
@@ -32,10 +33,17 @@ function CourseCard({course}) {
   }
   
   return (
-    <div className='shadow-md rounded-xl flex flex-col h-full overflow-hidden transition-all hover:shadow-lg'>
+    <div className='shadow-md rounded-xl flex flex-col h-full overflow-hidden transition-all hover:shadow-lg relative'>
+      {/* Delete Button - Top Right Corner */}
+      <DeleteCourseButton 
+        courseId={course?.cid} 
+        courseName={courseJson?.name || 'this course'} 
+        onDelete={refreshData}
+      />
+      
       <Image 
-        src={'/rocket.gif'} 
-        alt="Go to moon" 
+        src={course?.courseImage || '/rocket.gif'} 
+        alt={courseJson?.name || "Course image"} 
         width={500} 
         height={300}  
         className='w-full aspect-video object-cover rounded-t-xl'

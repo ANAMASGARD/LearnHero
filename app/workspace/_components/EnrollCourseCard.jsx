@@ -30,8 +30,8 @@ function EnrollCourseCard({course, enrollCourse}) {
     return (
         <div className='shadow-md rounded-xl flex flex-col h-full overflow-hidden transition-all hover:shadow-lg'>
             <Image 
-                src={'/rocket.gif'} 
-                alt="Course banner" 
+                src={course?.courseImage || '/rocket.gif'} 
+                alt={courseName || "Course banner"} 
                 width={400} 
                 height={300}  
                 className='w-full aspect-video rounded-t-xl object-cover'
