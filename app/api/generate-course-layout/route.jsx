@@ -72,7 +72,7 @@ Schema:
 // Lazy initialization to avoid build-time errors
 let aiInstance = null;
 
-function getAI() {
+export function getAI() {
   if (!aiInstance) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {

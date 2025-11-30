@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ai } from '../generate-course-layout/route';
+import { getAI } from '../generate-course-layout/route';
 import axios from 'axios';
 import { db } from '@/config/db';
 import { eq } from 'drizzle-orm';
@@ -49,6 +49,7 @@ export async function POST(req) {
                     },
                 ];
 
+  const ai = getAI();
   const response = await ai.models.generateContent({
     model,
     config,
