@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 
+// Force dynamic rendering to avoid build-time API initialization
+export const dynamic = 'force-dynamic';
+
 const QUESTIONS_PROMPT = `You are an expert technical interviewer.
 Based on the following inputs, generate a well-structured list of high-quality interview questions including candidate introduction, salary negotiation, and closing questions.
 

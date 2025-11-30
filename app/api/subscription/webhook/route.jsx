@@ -4,7 +4,20 @@ import { db } from "@/config/db";
 import { usersTable } from "@/config/schema";
 import { eq } from "drizzle-orm";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Lazy initialization to avoid build-time errors
+let stripeInstance = null;
+
+function getStripe() {
+  if (!stripeInstance) {
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    if (!secretKey) {
+      throw new Error('STRIPE_SECRET_KEY environment variable is not set');
+    }
+    stripeInstance = new Stripe(secretKey);
+  }
+  return stripeInstance;
+}
+
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export const runtime = 'nodejs';
@@ -25,6 +38,7 @@ export async function POST(request) {
 
     let event;
     try {
+      const stripe = getStripe();
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err) {
       console.error("Webhook signature verification failed:", err.message);
@@ -67,6 +81,7 @@ export async function POST(request) {
         const subscription = event.data.object;
         const customerId = subscription.customer;
 
+        const stripe = getStripe();
         const customer = await stripe.customers.retrieve(customerId);
         const email = customer.email;
 
@@ -100,6 +115,7 @@ export async function POST(request) {
         const subscription = event.data.object;
         const customerId = subscription.customer;
 
+        const stripe = getStripe();
         const customer = await stripe.customers.retrieve(customerId);
         const email = customer.email;
 
@@ -123,6 +139,7 @@ export async function POST(request) {
         const subscriptionId = invoice.subscription;
 
         if (subscriptionId && customerId) {
+          const stripe = getStripe();
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
           const customer = await stripe.customers.retrieve(customerId);
           const email = customer.email;
@@ -145,6 +162,7 @@ export async function POST(request) {
         const invoice = event.data.object;
         const customerId = invoice.customer;
 
+        const stripe = getStripe();
         const customer = await stripe.customers.retrieve(customerId);
         const email = customer.email;
 

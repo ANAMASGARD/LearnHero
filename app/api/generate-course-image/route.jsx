@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+// Force dynamic rendering to avoid build-time API initialization
+export const dynamic = 'force-dynamic';
+
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
 
 export async function POST(req) {

@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 
+// Force dynamic rendering to avoid build-time API initialization
+export const dynamic = 'force-dynamic';
+
 const FEEDBACK_PROMPT = `{{conversation}}
 
 Based on this Interview Conversation between assistant and user, 

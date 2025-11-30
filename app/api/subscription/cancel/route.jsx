@@ -8,7 +8,19 @@ import { eq } from "drizzle-orm";
 // Force dynamic rendering to avoid build-time database connection
 export const dynamic = 'force-dynamic';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Lazy initialization to avoid build-time errors
+let stripeInstance = null;
+
+function getStripe() {
+  if (!stripeInstance) {
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    if (!secretKey) {
+      throw new Error('STRIPE_SECRET_KEY environment variable is not set');
+    }
+    stripeInstance = new Stripe(secretKey);
+  }
+  return stripeInstance;
+}
 
 export async function POST(request) {
   try {
@@ -47,6 +59,7 @@ export async function POST(request) {
     }
 
     // Cancel subscription at period end
+    const stripe = getStripe();
     const subscription = await stripe.subscriptions.update(
       stripeSubscriptionId,
       {

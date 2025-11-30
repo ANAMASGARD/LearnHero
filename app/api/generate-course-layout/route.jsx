@@ -69,10 +69,21 @@ Schema:
 `
 ;
 
+// Lazy initialization to avoid build-time errors
+let aiInstance = null;
 
-  export const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-  });
+function getAI() {
+  if (!aiInstance) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error('GEMINI_API_KEY environment variable is not set');
+    }
+    aiInstance = new GoogleGenAI({
+      apiKey: apiKey,
+    });
+  }
+  return aiInstance;
+}
 
 
 
@@ -108,6 +119,7 @@ export async function POST(request) {
     },
   ];
 
+  const ai = getAI();
   const response = await ai.models.generateContent({
     model,
     config,
