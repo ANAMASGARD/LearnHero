@@ -24,7 +24,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  Github,
   Twitter,
   Linkedin,
   Instagram
@@ -1219,11 +1218,11 @@ const TestimonialsSection = () => {
 const ContactSection = () => {
   const socialLinks = [
     {
-      name: "GitHub",
-      icon: Github,
-      url: "https://github.com/ANAMASGARD",
-      color: "from-gray-700 to-gray-900",
-      hoverColor: "hover:text-gray-300"
+      name: "Support",
+      icon: Mail,
+      url: "mailto:harsh.talcum192@slmails.com",
+      color: "from-blue-500 to-blue-700",
+      hoverColor: "hover:text-blue-300"
     },
     {
       name: "Twitter",
@@ -1252,8 +1251,8 @@ const ContactSection = () => {
     {
       icon: Mail,
       label: "Email",
-      value: "hello@learnhero.ai",
-      link: "mailto:hello@learnhero.ai"
+      value: "harsh.talcum192@slmails.com",
+      link: "mailto:harsh.talcum192@slmails.com"
     },
     {
       icon: Phone,

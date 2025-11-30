@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
 import { UserButton } from '@clerk/nextjs'
 import { SidebarTrigger } from '@/components/ui/sidebar'
+import { SubscriptionBadge } from '@/components/SubscriptionBadge'
 
 function WelcomeBanner ({hideSidebar=false}){
   return (
@@ -87,21 +88,24 @@ function WelcomeBanner ({hideSidebar=false}){
           </div>
         </div>
 
-        {/* User Button */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          whileHover={{ scale: 1.05 }}
-        >
-          <UserButton 
-            appearance={{
-              elements: {
-                avatarBox: "w-8 h-8 md:w-10 md:h-10"
-              }
-            }}
-          />
-        </motion.div>
+        {/* Subscription Badge and User Button */}
+        <div className="flex items-center gap-3">
+          <SubscriptionBadge className="bg-white/20 dark:bg-gray-800/20 text-white border border-white/30" />
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            whileHover={{ scale: 1.05 }}
+          >
+            <UserButton 
+              appearance={{
+                elements: {
+                  avatarBox: "w-8 h-8 md:w-10 md:h-10"
+                }
+              }}
+            />
+          </motion.div>
+        </div>
       </div>
 
       {/* Animated gradient overlay */}

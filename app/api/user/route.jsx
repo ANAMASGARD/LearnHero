@@ -23,12 +23,19 @@ export async function POST(request) {
 
         //if not then insert new user 
         if (users.length === 0) {
+            // Initialize 30-day trial for new users
+            const trialEndDate = new Date();
+            trialEndDate.setDate(trialEndDate.getDate() + 30);
+            
             const result = await db.insert(usersTable).values({
                 name: name,
                 email: email,
+                subscriptionStatus: 'trial',
+                subscriptionPlan: 'basic',
+                subscriptionEndDate: trialEndDate,
             }).returning(usersTable);
 
-            console.log(result);
+            console.log('User created with 30-day trial:', result);
         
             return NextResponse.json(result[0]);
         }
@@ -37,7 +44,10 @@ export async function POST(request) {
     } catch (error) {
         console.error('Error in POST /api/user:', error);
         return NextResponse.json(
-            { error: 'Invalid request body' },
+            { 
+                error: error.message || 'Failed to create user',
+                details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            },
             { status: 400 }
         );
     }

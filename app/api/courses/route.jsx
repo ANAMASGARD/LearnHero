@@ -3,6 +3,7 @@ import { coursesTable, enrollCourseTable } from '@/config/schema';
 import { db } from '@/config/db';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { currentUser } from '@clerk/nextjs/server';
+import { checkSubscriptionLimit } from '@/lib/subscription';
 
 export async function GET(req) {
     const { searchParams } = new URL(req.url);

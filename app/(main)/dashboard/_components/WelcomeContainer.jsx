@@ -3,6 +3,7 @@ import React from 'react'
 import { useUser } from '@clerk/nextjs'
 import { UserButton } from '@clerk/nextjs'
 import { motion } from 'framer-motion'
+import { SubscriptionBadge } from '@/components/SubscriptionBadge'
 
 function WelcomeContainer() {
     const { user } = useUser();
@@ -47,22 +48,24 @@ function WelcomeContainer() {
                 </motion.p>
             </div>
 
-            {/* Right side - User button */}
-            <motion.div 
-                className="flex-shrink-0 ml-4 relative z-10"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                whileHover={{ scale: 1.05 }}
-            >
-                <UserButton
-                    appearance={{
-                        elements: {
-                            avatarBox: "w-8 h-6 md:w-10 md:h-10"
-                        }
-                    }}
-                />
-            </motion.div>
+            {/* Right side - Subscription Badge and User button */}
+            <div className="flex items-center gap-3 flex-shrink-0 ml-4 relative z-10">
+                <SubscriptionBadge className="bg-white/80 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700" />
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                    whileHover={{ scale: 1.05 }}
+                >
+                    <UserButton
+                        appearance={{
+                            elements: {
+                                avatarBox: "w-8 h-6 md:w-10 md:h-10"
+                            }
+                        }}
+                    />
+                </motion.div>
+            </div>
         </motion.header>
     )
 }

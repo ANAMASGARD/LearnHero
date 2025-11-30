@@ -76,6 +76,19 @@ Schema:
 export async function POST(request) {
     const {courseId, ...formData} = await request.json();
     const user= await currentUser();
+    
+    // Check subscription limit before creating course
+    if (user?.primaryEmailAddress?.emailAddress) {
+        const { checkSubscriptionLimit } = await import('@/lib/subscription');
+        const limitCheck = await checkSubscriptionLimit(user.primaryEmailAddress.emailAddress, 'course');
+        
+        if (!limitCheck.allowed) {
+            return NextResponse.json(
+                { error: limitCheck.reason, limit: limitCheck.limit },
+                { status: 403 }
+            );
+        }
+    }
 
   const config = {
     responseMimeType: 'text/plain',

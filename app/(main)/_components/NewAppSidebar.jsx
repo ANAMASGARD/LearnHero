@@ -54,14 +54,14 @@ export function NewAppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className={'p-4'} > 
-        <Image
-          src={'/logo.svg'}
-          alt="Logo"
-          width={50}
-          height={30}
-          
-        />
-      
+        <Link href="/workspace" className="cursor-pointer">
+          <Image
+            src={'/logo.svg'}
+            alt="Logo"
+            width={50}
+            height={30}
+          />
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup >

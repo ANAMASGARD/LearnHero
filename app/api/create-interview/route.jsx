@@ -2,6 +2,7 @@ import { db } from "@/config/db";
 import { interviewsTable } from "@/config/schema";
 import { NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { checkSubscriptionLimit } from "@/lib/subscription";
 
 export async function POST(request) {
     try {
@@ -23,6 +24,16 @@ export async function POST(request) {
         
         // Use the email from request body if provided, otherwise use Clerk user email
         const creatorEmail = createdBy || userEmail;
+        
+        // Check subscription limit before creating interview
+        const limitCheck = await checkSubscriptionLimit(creatorEmail, 'interview');
+        
+        if (!limitCheck.allowed) {
+            return NextResponse.json(
+                { error: limitCheck.reason, limit: limitCheck.limit },
+                { status: 403 }
+            );
+        }
         
         const result = await db.insert(interviewsTable).values({
             interview_id,

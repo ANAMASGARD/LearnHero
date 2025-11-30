@@ -5,6 +5,11 @@ export const usersTable = pgTable("users", {
   name: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
   subscriptionId: varchar(),
+  subscriptionStatus: varchar({ length: 50 }).default('free'), // 'free', 'pro', 'trial'
+  subscriptionPlan: varchar({ length: 50 }).default('basic'), // 'basic', 'pro'
+  subscriptionEndDate: timestamp(), // For trial tracking
+  stripeCustomerId: varchar({ length: 255 }), // Stripe customer ID
+  stripeSubscriptionId: varchar({ length: 255 }), // Stripe subscription ID
 });
 
 export const coursesTable = pgTable("courses", {
