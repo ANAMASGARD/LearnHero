@@ -253,27 +253,27 @@ End on a positive note.
 
   if (!interviewInfo) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 dark:border-blue-400"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
               {interviewInfo?.jobPosition} Interview
             </h1>
-            <p className="text-gray-600">AI-Powered Interview Assistant</p>
+            <p className="text-gray-600 dark:text-gray-400">AI-Powered Interview Assistant</p>
           </div>
           
-          <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200">
-            <Timer className="text-blue-600" />
-            <span className="font-mono text-lg font-semibold text-gray-700">
+          <div className="flex items-center gap-4 bg-white dark:bg-gray-800 px-4 py-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+            <Timer className="text-blue-600 dark:text-blue-400" />
+            <span className="font-mono text-lg font-semibold text-gray-700 dark:text-gray-300">
               {formatTime(timer)}
             </span>
           </div>
@@ -282,53 +282,53 @@ End on a positive note.
         {/* Interview Panels */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* AI Interviewer */}
-          <div className={`bg-white rounded-xl p-6 shadow-md border transition-all duration-300 ${isSpeaking ? "border-blue-300 ring-2 ring-blue-100" : "border-gray-200"}`}>
+          <div className={`bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border transition-all duration-300 ${isSpeaking ? "border-blue-300 dark:border-blue-500 ring-2 ring-blue-100 dark:ring-blue-900/50" : "border-gray-200 dark:border-gray-700"}`}>
             <div className="flex flex-col items-center justify-center h-full space-y-4">
               <div className="relative">
                 {isSpeaking && (
-                  <div className="absolute inset-0 rounded-full bg-blue-100 animate-ping opacity-75"></div>
+                  <div className="absolute inset-0 rounded-full bg-blue-100 dark:bg-blue-900/50 animate-ping opacity-75"></div>
                 )}
-                <div className="relative z-10 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md bg-blue-100 flex items-center justify-center">
+                <div className="relative z-10 w-20 h-20 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                   <span className="text-4xl">🤖</span>
                 </div>
               </div>
               <div className="text-center">
-                <h2 className="text-lg font-semibold text-gray-800">AI Interviewer</h2>
-                <p className="text-sm text-gray-500">LearnHero AI</p>
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">AI Interviewer</h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">LearnHero AI</p>
               </div>
             </div>
           </div>
 
           {/* Candidate */}
-          <div className={`bg-white rounded-xl p-6 shadow-md border transition-all duration-300 ${activeUser ? "border-purple-300 ring-2 ring-purple-100" : "border-gray-200"}`}>
+          <div className={`bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border transition-all duration-300 ${activeUser ? "border-purple-300 dark:border-purple-500 ring-2 ring-purple-100 dark:ring-purple-900/50" : "border-gray-200 dark:border-gray-700"}`}>
             <div className="flex flex-col items-center justify-center h-full space-y-4">
               <div className="relative">
                 {activeUser && (
-                  <div className="absolute inset-0 rounded-full bg-purple-100 animate-ping opacity-75"></div>
+                  <div className="absolute inset-0 rounded-full bg-purple-100 dark:bg-purple-900/50 animate-ping opacity-75"></div>
                 )}
-                <div className="relative z-10 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-md bg-gray-100 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-gray-600">
+                <div className="relative z-10 w-20 h-20 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-gray-600 dark:text-gray-300">
                     {candidateName.charAt(0).toUpperCase()}
                   </span>
                 </div>
               </div>
               <div className="text-center">
-                <h2 className="text-lg font-semibold text-gray-800">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                   {candidateName}
                 </h2>
-                <p className="text-sm text-gray-500">Candidate</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Candidate</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Subtitles */}
-        <div className="bg-white rounded-lg p-4 mb-6 shadow-sm border border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-6 shadow-sm border border-gray-200 dark:border-gray-700">
           <div className="min-h-16 flex items-center justify-center">
             {subtitles ? (
-              <p className="text-center text-gray-700">"{subtitles}"</p>
+              <p className="text-center text-gray-700 dark:text-gray-300">"{subtitles}"</p>
             ) : (
-              <p className="text-center text-gray-400">
+              <p className="text-center text-gray-400 dark:text-gray-500">
                 {isSpeaking ? "AI is speaking..." : "Waiting for response..."}
               </p>
             )}
@@ -336,16 +336,16 @@ End on a positive note.
         </div>
 
         {/* Controls */}
-        <div className="bg-white rounded-xl p-4 shadow-md border border-gray-200">
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-md border border-gray-200 dark:border-gray-700">
           <div className="flex flex-col items-center">
             <button 
               onClick={stopInterview}
-              className="p-3 rounded-full bg-red-100 text-red-600 hover:bg-red-200 shadow-sm transition-all flex items-center gap-2"
+              className="p-3 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 shadow-sm transition-all flex items-center gap-2"
             >
               <Phone size={20} />
               <span>End Interview</span>
             </button>
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
               {activeUser ? "Please respond..." : "AI is speaking..."}
             </p>
           </div>
@@ -353,11 +353,11 @@ End on a positive note.
       </div>
       
       {isGeneratingFeedback && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-8 max-w-md w-full text-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2">Generating Feedback</h2>
-            <p className="text-gray-600">Please wait while we analyze your interview...</p>
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 dark:bg-opacity-90 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-md w-full text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 dark:border-blue-400 mx-auto mb-4"></div>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Generating Feedback</h2>
+            <p className="text-gray-600 dark:text-gray-400">Please wait while we analyze your interview...</p>
           </div>
         </div>
       )}
