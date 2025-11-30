@@ -26,6 +26,8 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  // Disable static optimization for API routes during build
+  output: undefined, // Let Amplify handle the output
 };
 
 export default nextConfig;
