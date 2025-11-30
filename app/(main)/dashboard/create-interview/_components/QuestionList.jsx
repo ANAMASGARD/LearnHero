@@ -85,29 +85,29 @@ function QuestionList({ formData, onCreateLink, loading }) {
 
   if (isGenerating) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 bg-white rounded-xl shadow-md">
-        <Loader2 className="w-12 h-12 animate-spin text-blue-600 mb-4" />
-        <h3 className="text-xl font-semibold mb-2">Generating Interview Questions</h3>
-        <p className="text-gray-600">Please wait while AI creates personalized questions...</p>
+      <div className="flex flex-col items-center justify-center p-12 bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50">
+        <Loader2 className="w-12 h-12 animate-spin text-primary mb-4" />
+        <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Generating Interview Questions</h3>
+        <p className="text-gray-600 dark:text-gray-400">Please wait while AI creates personalized questions...</p>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-white rounded-xl shadow-md">
+    <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Generated Interview Questions</h2>
-        <span className="text-sm text-gray-600">{questions.length} questions</span>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Generated Interview Questions</h2>
+        <span className="text-sm text-gray-600 dark:text-gray-400">{questions.length} questions</span>
       </div>
 
       <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
         {questions.map((q, index) => (
-          <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <div key={index} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
             <div className="flex items-start gap-3">
-              <CheckCircle className="w-5 h-5 text-green-600 mt-1 flex-shrink-0" />
+              <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 mt-1 flex-shrink-0" />
               <div className="flex-1">
-                <p className="font-medium text-gray-900">{q.question}</p>
-                <span className="text-xs text-gray-500 mt-1 inline-block">{q.type}</span>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{q.question}</p>
+                <span className="text-xs text-gray-500 dark:text-gray-400 mt-1 inline-block">{q.type}</span>
               </div>
             </div>
           </div>
@@ -125,7 +125,7 @@ function QuestionList({ formData, onCreateLink, loading }) {
         <Button 
           onClick={handleCreateInterview}
           disabled={loading || questions.length === 0}
-          className="flex-1"
+          className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           {loading ? (
             <>

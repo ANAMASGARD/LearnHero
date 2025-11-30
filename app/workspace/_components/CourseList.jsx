@@ -25,14 +25,14 @@ function CourseList() {
     }
     return (
         <div className='mt-10'>
-            <h2 className='font-bold text-xl'>CourseList </h2>
+            <h2 className='font-bold text-xl text-gray-900 dark:text-gray-100'>CourseList </h2>
 
             {courses?.length == 0 ? (
-                <div className='flex p-7 items-center justify-center flex-col border-2 border-dashed border-gray-300 rounded-lg mt-10 bg-secondary' >
+                <div className='flex p-7 items-center justify-center flex-col border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg mt-10 bg-secondary dark:bg-gray-800/50' >
                     <Image src={'/rocket.gif'} alt="Go to moon" width={100} height={100}  />
-                <h2 className='my-2 text-large font-bold '> Looks Like you haven't made any courses yet </h2>
+                <h2 className='my-2 text-large font-bold text-gray-900 dark:text-gray-100'> Looks Like you haven't made any courses yet </h2>
                 <AddNewCourseDialog>
-<Button>+Create your first course </Button>
+<Button className='bg-primary hover:bg-primary/90 text-primary-foreground'>+Create your first course </Button>
 </AddNewCourseDialog>
                 </div>
             ) : (

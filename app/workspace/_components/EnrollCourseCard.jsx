@@ -28,7 +28,7 @@ function EnrollCourseCard({course, enrollCourse}) {
     }
 
     return (
-        <div className='shadow-md rounded-xl flex flex-col h-full overflow-hidden transition-all hover:shadow-lg'>
+        <div className='shadow-md rounded-xl flex flex-col h-full overflow-hidden transition-all hover:shadow-lg dark:shadow-gray-800/50'>
             <Image 
                 src={course?.courseImage || '/rocket.gif'} 
                 alt={courseName || "Course banner"} 
@@ -37,18 +37,18 @@ function EnrollCourseCard({course, enrollCourse}) {
                 className='w-full aspect-video rounded-t-xl object-cover'
             />
             
-            <div className='p-4 flex flex-col gap-3 bg-white flex-grow'>
-                <h2 className='font-bold text-lg line-clamp-1 text-gray-900'>{courseName}</h2>
-                <p className='line-clamp-2 text-gray-500 text-sm flex-grow'>{courseDescription}</p>
+            <div className='p-4 flex flex-col gap-3 bg-white dark:bg-gray-800 flex-grow rounded-b-xl'>
+                <h2 className='font-bold text-lg line-clamp-1 text-gray-900 dark:text-gray-100'>{courseName}</h2>
+                <p className='line-clamp-2 text-gray-500 dark:text-gray-400 text-sm flex-grow'>{courseDescription}</p>
                 
                 <div className='mt-auto pt-2'>
-                    <h2 className='flex justify-between text-sm text-primary'> 
+                    <h2 className='flex justify-between text-sm text-primary dark:text-blue-400'> 
                         Progress <span>{calculateProgress().toFixed(0)}%</span>
                     </h2>
                     <Progress value={calculateProgress()} className="h-2 my-2" />
 
                     <Link href={'/workspace/view-course/'+course?.cid} className='block w-full'>
-                        <Button className='w-full mt-2 gap-1 flex items-center justify-center'>
+                        <Button className='w-full mt-2 gap-1 flex items-center justify-center bg-primary hover:bg-primary/90 text-primary-foreground'>
                             <PlayCircle className="h-4 w-4" /> 
                             Continue Learning
                         </Button>

@@ -9,9 +9,9 @@ function WorkspaceProvider({children }) {
     <SidebarProvider>
         <AppSidebar />
          
-        <div className="flex flex-col w-full h-screen">
+        <div className="flex flex-col w-full h-screen bg-gray-50 dark:bg-gray-900">
             <AppHeader />
-            <div className="p-10 overflow-y-auto">
+            <div className="p-10 overflow-y-auto bg-gray-50 dark:bg-gray-900">
                 {children }
                 </div>
                 </div>

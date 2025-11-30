@@ -7,7 +7,7 @@ import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import Image from "next/image";
 import { LandingThemeProvider } from "@/components/landing-theme-provider";
-import { LandingThemeToggle } from "@/components/landing-theme-toggle";
+import { AnimatedThemeToggle } from "@/components/AnimatedThemeToggle";
 import {
   Sparkles,
   BookOpen,
@@ -285,7 +285,7 @@ const Header = () => {
         </motion.div>
 
         <div className="flex items-center space-x-4">
-          <LandingThemeToggle />
+          <AnimatedThemeToggle size="small" />
           {!user ? (
             <div className="flex items-center space-x-3">
               <Link href="/sign-in">

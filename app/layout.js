@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import Provider from "./provider";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProviderWrapper } from "@/components/theme-provider";
+import { FloatingThemeToggle } from "@/components/FloatingThemeToggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,9 +29,8 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProviderWrapper>
-          <Provider>{children}
-            
-          </Provider>
+          <Provider>{children}</Provider>
+          <FloatingThemeToggle />
           <Toaster />
         </ThemeProviderWrapper>
       </body>

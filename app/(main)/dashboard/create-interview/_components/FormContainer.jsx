@@ -33,9 +33,9 @@ function FormContainer({ onHandleInputChange, GoToNext }) {
     }
     console.log(interviewType);
     return (
-        <div className="p-5 bg-white rounded-xl shadow-md">
+        <div className="p-5 bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900/50">
             <div>
-                <h2 className="text-sm font-medium">Job Position</h2>
+                <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">Job Position</h2>
                 <Input
                     placeholder="e.g. Software Engineer"
                     className="mt-2"
@@ -45,7 +45,7 @@ function FormContainer({ onHandleInputChange, GoToNext }) {
                 />
             </div>
             <div className="mt-4">
-                <h2 className="text-sm font-medium">Job Description</h2>
+                <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">Job Description</h2>
                 <Textarea
                     placeholder="Enter detailed job description"
                     className="h-[200px] mt-2"
@@ -55,7 +55,7 @@ function FormContainer({ onHandleInputChange, GoToNext }) {
                 />
             </div>
             <div className="mt-4">
-                <h2 className="text-sm font-medium">Interview Duration</h2>
+                <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">Interview Duration</h2>
                 <Select
                     onValueChange={(value) => {
                         onHandleInputChange('duration', value);
@@ -74,15 +74,15 @@ function FormContainer({ onHandleInputChange, GoToNext }) {
                 </Select>
             </div>
             <div className="mt-4">
-                <h2 className="text-sm font-medium">Interview Type</h2>
+                <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">Interview Type</h2>
                 <div className="flex gap-3 flex-wrap mt-2">
                     {InterviewType.map((type, index) => (
                         <div
                             key={index}
                             className={`cursor-pointer flex items-center gap-2 p-1 px-2
-                border border-gray-300 rounded-2xl shadow-sm
-                ${interviewType.includes(type.name) ? 'text-primary bg-blue-100' : ''}
-                hover:bg-gray-100`}
+                border border-gray-300 dark:border-gray-600 rounded-2xl shadow-sm
+                ${interviewType.includes(type.name) ? 'text-primary bg-primary/10 dark:bg-primary/20 border-primary' : 'text-gray-900 dark:text-gray-100'}
+                hover:bg-gray-100 dark:hover:bg-gray-700`}
                             onClick={() => AddInterviewType(type.name)
                             }
                         >
@@ -93,7 +93,7 @@ function FormContainer({ onHandleInputChange, GoToNext }) {
                 </div>
             </div>
             <div className="mt-7 flex justify-end " onClick={() => GoToNext()}>
-                <Button>
+                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                     Generate Question <ArrowRight className="ml-2 cursor-pointer" />
                 </Button>
             </div>
