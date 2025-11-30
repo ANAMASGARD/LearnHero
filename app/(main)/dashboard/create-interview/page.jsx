@@ -9,6 +9,9 @@ import QuestionList from './_components/QuestionList'
 import InterviewLink from './_components/InterviewLink'
 import axios from 'axios'
 
+// Force dynamic rendering to avoid Clerk build-time errors
+export const dynamic = 'force-dynamic'
+
 function CreateInterview() {
   const router = useRouter();  
   const [step, setStep] = useState(1);

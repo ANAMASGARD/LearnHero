@@ -5,6 +5,9 @@ import CreateOptions from './_components/CreateOptions'
 import LatestInterviewsList from './_components/LatestInterviewsList'
 import { useUser } from '@clerk/nextjs'
 import axios from 'axios'
+
+// Force dynamic rendering to avoid Clerk build-time errors
+export const dynamic = 'force-dynamic'
 import { Users, Award, TrendingUp, Clock, ArrowRight, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'

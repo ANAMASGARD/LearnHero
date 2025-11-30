@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 import axios from 'axios';
+
+// Force dynamic rendering to avoid Clerk build-time errors
+export const dynamic = 'force-dynamic';
 import { Calendar, TrendingUp, Users, Award, BarChart3, Clock, CheckCircle2, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
