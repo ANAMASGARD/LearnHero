@@ -5,6 +5,9 @@ import CourseList from './_components/CourseList'
 import EnrollCourseList from './_components/EnrollCourseList'
 import { motion } from 'framer-motion'
 
+// Force dynamic rendering to avoid Clerk build-time errors
+export const dynamic = 'force-dynamic'
+
 const Workspace = () => {
   const containerVariants = {
     hidden: { opacity: 0 },

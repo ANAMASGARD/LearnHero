@@ -8,6 +8,9 @@ import { toast } from 'sonner'
 import axios from 'axios'
 import Link from 'next/link'
 
+// Force dynamic rendering to avoid Clerk build-time errors
+export const dynamic = 'force-dynamic'
+
 export default function BillingPage() {
   const { user } = useUser()
   const [subscription, setSubscription] = useState(null)

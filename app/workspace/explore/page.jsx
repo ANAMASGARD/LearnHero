@@ -9,6 +9,9 @@ import axios from 'axios'
 import CourseCard from '../_components/CourseCard'
 import { Skeleton } from '@/components/ui/skeleton'
 
+// Force dynamic rendering to avoid Clerk build-time errors
+export const dynamic = 'force-dynamic'
+
 
 
 
