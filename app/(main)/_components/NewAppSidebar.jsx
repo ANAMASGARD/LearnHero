@@ -30,7 +30,7 @@ const SidebarOptions = [ {
 {
     title: "Interviews",
     icon: Video,
-    path:'/workspace/my-learning',
+    path:'/dashboard/create-interview',
 },
  {
     title:'All Interview',
@@ -65,12 +65,11 @@ export function NewAppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup >
-            {/* <AddNewCourseDialog> */}
-         <Button>
-            Create Mock Test 
-         </Button>
-         {/* </AddNewCourseDialog> */}
-
+            <Link href="/dashboard/create-interview" className="w-full">
+              <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
+                Create New Interview
+              </Button>
+            </Link>
             </SidebarGroup>
         <SidebarGroup >
             <SidebarGroupContent>
@@ -78,8 +77,8 @@ export function NewAppSidebar() {
                     {SidebarOptions.map((item,index ) => (
                         <SidebarMenuItem key={index}>
                             <SidebarMenuButton asChild className={'p-5'}>
-                                <Link href ={item.path} className={`text-[17px]
-                                ${path.includes(item.path) && 'text-primary bg-purple-50'}`
+                                <Link href={item.path} className={`text-[17px] text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary
+                                ${path === item.path || (item.path !== '/dashboard/#' && path.startsWith(item.path)) ? 'text-primary bg-primary/10 dark:bg-primary/20' : ''}`
                                     
                                 }>
                                 <item.icon className="h-7 w-7" />

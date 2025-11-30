@@ -42,10 +42,10 @@ function InterviewCompleted() {
         </div>
 
         <div className="flex gap-4 justify-center">
-          <Link href="/">
+          <Link href="/dashboard">
             <Button className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground">
               <Home className="w-4 h-4" />
-              Go to Home
+              Go to Dashboard
             </Button>
           </Link>
         </div>

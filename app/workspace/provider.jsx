@@ -1,8 +1,6 @@
 import React from 'react'
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "./_components/AppSidebar"
-import AppHeader from './_components/AppHeader'
-import WelcomeBanner from './_components/WelcomeBanner'
 
 function WorkspaceProvider({children }) {
   return (
@@ -10,8 +8,7 @@ function WorkspaceProvider({children }) {
         <AppSidebar />
          
         <div className="flex flex-col w-full h-screen bg-gray-50 dark:bg-gray-900">
-            <AppHeader />
-            <div className="p-10 overflow-y-auto bg-gray-50 dark:bg-gray-900">
+            <div className="p-4 sm:p-6 md:p-10 overflow-y-auto bg-gray-50 dark:bg-gray-900">
                 {children }
                 </div>
                 </div>

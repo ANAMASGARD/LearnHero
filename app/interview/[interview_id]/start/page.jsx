@@ -289,7 +289,11 @@ End on a positive note.
                   <div className="absolute inset-0 rounded-full bg-blue-100 dark:bg-blue-900/50 animate-ping opacity-75"></div>
                 )}
                 <div className="relative z-10 w-20 h-20 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                  <span className="text-4xl">🤖</span>
+                  <img 
+                    src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=faces" 
+                    alt="AI Interviewer" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
               <div className="text-center">
