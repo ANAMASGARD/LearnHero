@@ -24,11 +24,12 @@ export const metadata = {
   description: "learnhero is a platform for AI course generator for STEM and more .",
 };
 
+// Clerk publishable key - this is a PUBLIC key, safe to include in code
+const clerkPubKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_ZXF1aXBwZWQtbGVtbWluZy02My5jbGVyay5hY2NvdW50cy5kZXYk';
+
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider
-      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
-    >
+    <ClerkProvider publishableKey={clerkPubKey}>
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
