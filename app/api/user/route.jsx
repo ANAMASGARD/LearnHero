@@ -46,12 +46,19 @@ export async function POST(request) {
         return NextResponse.json(users[0]);
     } catch (error) {
         console.error('Error in POST /api/user:', error);
+        
+        // Return 400 for validation errors, 500 for server errors
+        const isClientError = error.message?.includes('required') || 
+                             error.message?.includes('validation') ||
+                             error.message?.includes('duplicate') ||
+                             error.message?.includes('unique');
+        
         return NextResponse.json(
             { 
                 error: error.message || 'Failed to create user',
                 details: process.env.NODE_ENV === 'development' ? error.stack : undefined
             },
-            { status: 400 }
+            { status: isClientError ? 400 : 500 }
         );
     }
 }

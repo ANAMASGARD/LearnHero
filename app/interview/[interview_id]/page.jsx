@@ -8,6 +8,9 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { useUser } from '@clerk/nextjs';
 
+// Force dynamic rendering (uses Clerk)
+export const dynamic = 'force-dynamic';
+
 function InterviewJoinPage() {
   const { interview_id } = useParams();
   const router = useRouter();

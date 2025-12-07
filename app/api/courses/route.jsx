@@ -9,34 +9,50 @@ import { checkSubscriptionLimit } from '@/lib/subscription';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req) {
-    const { searchParams } = new URL(req.url);
-    const courseId = searchParams?.get('courseId');
-    const user = await currentUser(); // Renamed to "user" to match usage below
+    try {
+        const { searchParams } = new URL(req.url);
+        const courseId = searchParams?.get('courseId');
+        const user = await currentUser();
 
-
-    if(courseId == 0 ) {
-         const result = await db.select().from(coursesTable)
-            .where(sql`${coursesTable.courseContent}::jsonb != '{}'::jsonb`);
-
-            console.log(result);    
-
-        return NextResponse.json(result);
-
-    }
-    if (courseId) {
-        const result = await db.select().from(coursesTable)
-            .where(eq(coursesTable.cid, courseId));
+        if(courseId == 0 ) {
+            const result = await db.select().from(coursesTable)
+                .where(sql`${coursesTable.courseContent}::jsonb != '{}'::jsonb`);
 
             console.log(result);    
+            return NextResponse.json(result);
+        }
+        
+        if (courseId) {
+            const result = await db.select().from(coursesTable)
+                .where(eq(coursesTable.cid, courseId));
 
-        return NextResponse.json(result[0]);
-    } else {
-        const result = await db.select().from(coursesTable)
-            .where(eq(coursesTable.userEmail, user.primaryEmailAddress?.emailAddress))
-            .orderBy(desc(coursesTable.id)); // <-- chain orderBy here
+            console.log(result);    
+            return NextResponse.json(result[0]);
+        } else {
+            // If no courseId, we need user email to filter courses
+            if (!user || !user.primaryEmailAddress?.emailAddress) {
+                return NextResponse.json(
+                    { error: "Unauthorized - Please sign in" },
+                    { status: 401 }
+                );
+            }
 
-        console.log(result);
-        return NextResponse.json(result);
+            const result = await db.select().from(coursesTable)
+                .where(eq(coursesTable.userEmail, user.primaryEmailAddress.emailAddress))
+                .orderBy(desc(coursesTable.id));
+
+            console.log(result);
+            return NextResponse.json(result);
+        }
+    } catch (error) {
+        console.error('Error in GET /api/courses:', error);
+        return NextResponse.json(
+            { 
+                error: "Internal server error",
+                details: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
+            { status: 500 }
+        );
     }
 }
 

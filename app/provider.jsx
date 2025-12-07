@@ -26,10 +26,21 @@ function Provider({ children }) {
         name: user?.fullName,
         email: user?.primaryEmailAddress?.emailAddress
       });
-      console.log(result.data);
+      console.log('User created/fetched:', result.data);
       setUserDetails(result.data);
     } catch (error) {
       console.error('Error creating user:', error);
+      if (error.response) {
+        // Server responded with error status
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error('No response received:', error.request);
+      } else {
+        // Something else happened
+        console.error('Error:', error.message);
+      }
     }
   }
 
