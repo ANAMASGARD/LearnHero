@@ -1,70 +1,34 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import Stripe from "stripe";
-import { db } from "@/config/db";
+import { getDb } from "@/config/db";
 import { usersTable } from "@/config/schema";
 import { eq } from "drizzle-orm";
-import { getEnv } from "@/lib/secrets";
+import { getEnvAsync } from "@/lib/secrets";
 
 export const dynamic = 'force-dynamic';
-
-let stripeInstance = null;
-
-function getStripe() {
-  if (!stripeInstance) {
-    const secretKey = getEnv('STRIPE_SECRET_KEY');
-    if (!secretKey) {
-      throw new Error('STRIPE_SECRET_KEY environment variable is not set');
-    }
-    stripeInstance = new Stripe(secretKey);
-  }
-  return stripeInstance;
-}
 
 export async function POST(request) {
   try {
     const user = await currentUser();
-
     if (!user || !user.primaryEmailAddress?.emailAddress) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const email = user.primaryEmailAddress.emailAddress;
+    const db = await getDb();
+    const userRecord = await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
 
-    // Get user record
-    const userRecord = await db
-      .select()
-      .from(usersTable)
-      .where(eq(usersTable.email, email))
-      .limit(1);
-
-    if (!userRecord || userRecord.length === 0) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
-    }
+    if (!userRecord?.length) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
     const stripeSubscriptionId = userRecord[0].stripeSubscriptionId;
+    if (!stripeSubscriptionId) return NextResponse.json({ error: "No active subscription found" }, { status: 400 });
 
-    if (!stripeSubscriptionId) {
-      return NextResponse.json(
-        { error: "No active subscription found" },
-        { status: 400 }
-      );
-    }
+    const secretKey = await getEnvAsync('STRIPE_SECRET_KEY');
+    if (!secretKey) throw new Error('STRIPE_SECRET_KEY not set');
+    const stripe = new Stripe(secretKey);
 
-    // Cancel subscription at period end
-    const stripe = getStripe();
-    const subscription = await stripe.subscriptions.update(
-      stripeSubscriptionId,
-      {
-        cancel_at_period_end: true
-      }
-    );
+    const subscription = await stripe.subscriptions.update(stripeSubscriptionId, { cancel_at_period_end: true });
 
     return NextResponse.json({
       success: true,
@@ -73,10 +37,6 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error("Error canceling subscription:", error);
-    return NextResponse.json(
-      { error: "Failed to cancel subscription" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to cancel subscription" }, { status: 500 });
   }
 }
-

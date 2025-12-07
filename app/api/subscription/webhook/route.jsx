@@ -1,22 +1,9 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { db } from "@/config/db";
+import { getDb } from "@/config/db";
 import { usersTable } from "@/config/schema";
 import { eq } from "drizzle-orm";
-import { getEnv } from "@/lib/secrets";
-
-let stripeInstance = null;
-
-function getStripe() {
-  if (!stripeInstance) {
-    const secretKey = getEnv('STRIPE_SECRET_KEY');
-    if (!secretKey) {
-      throw new Error('STRIPE_SECRET_KEY environment variable is not set');
-    }
-    stripeInstance = new Stripe(secretKey);
-  }
-  return stripeInstance;
-}
+import { getEnvAsync } from "@/lib/secrets";
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -25,164 +12,63 @@ export async function POST(request) {
   try {
     const body = await request.text();
     const signature = request.headers.get("stripe-signature");
-    const webhookSecret = getEnv('STRIPE_WEBHOOK_SECRET');
+    const webhookSecret = await getEnvAsync('STRIPE_WEBHOOK_SECRET');
 
     if (!signature || !webhookSecret) {
-      return NextResponse.json(
-        { error: "Missing signature or webhook secret" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing signature or webhook secret" }, { status: 400 });
     }
+
+    const secretKey = await getEnvAsync('STRIPE_SECRET_KEY');
+    if (!secretKey) throw new Error('STRIPE_SECRET_KEY not set');
+    const stripe = new Stripe(secretKey);
 
     let event;
     try {
-      const stripe = getStripe();
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err) {
       console.error("Webhook signature verification failed:", err.message);
-      return NextResponse.json(
-        { error: "Webhook signature verification failed" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 });
     }
 
-    // Handle different event types
+    const db = await getDb();
+
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object;
-        const customerId = session.customer;
-        const subscriptionId = session.subscription;
-
-        if (subscriptionId && customerId) {
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-          const customer = await stripe.customers.retrieve(customerId);
-          
+        if (session.subscription && session.customer) {
+          const subscription = await stripe.subscriptions.retrieve(session.subscription);
+          const customer = await stripe.customers.retrieve(session.customer);
           const email = customer.email || session.metadata?.userEmail;
-
           if (email) {
-            await db
-              .update(usersTable)
-              .set({
-                subscriptionStatus: "pro",
-                subscriptionPlan: "pro",
-                stripeCustomerId: customerId,
-                stripeSubscriptionId: subscriptionId,
-                subscriptionEndDate: new Date(subscription.current_period_end * 1000)
-              })
-              .where(eq(usersTable.email, email));
-          }
-        }
-        break;
-      }
-
-      case "customer.subscription.updated": {
-        const subscription = event.data.object;
-        const customerId = subscription.customer;
-
-        const stripe = getStripe();
-        const customer = await stripe.customers.retrieve(customerId);
-        const email = customer.email;
-
-        if (email) {
-          const status = subscription.status;
-          let subscriptionStatus = "free";
-          let subscriptionPlan = "basic";
-
-          if (status === "active" || status === "trialing") {
-            subscriptionStatus = "pro";
-            subscriptionPlan = "pro";
-          } else if (status === "canceled" || status === "unpaid") {
-            subscriptionStatus = "free";
-            subscriptionPlan = "basic";
-          }
-
-          await db
-            .update(usersTable)
-            .set({
-              subscriptionStatus,
-              subscriptionPlan,
-              stripeSubscriptionId: subscription.id,
+            await db.update(usersTable).set({
+              subscriptionStatus: "pro", subscriptionPlan: "pro",
+              stripeCustomerId: session.customer, stripeSubscriptionId: session.subscription,
               subscriptionEndDate: new Date(subscription.current_period_end * 1000)
-            })
-            .where(eq(usersTable.email, email));
+            }).where(eq(usersTable.email, email));
+          }
         }
         break;
       }
-
+      case "customer.subscription.updated":
       case "customer.subscription.deleted": {
         const subscription = event.data.object;
-        const customerId = subscription.customer;
-
-        const stripe = getStripe();
-        const customer = await stripe.customers.retrieve(customerId);
-        const email = customer.email;
-
-        if (email) {
-          await db
-            .update(usersTable)
-            .set({
-              subscriptionStatus: "free",
-              subscriptionPlan: "basic",
-              stripeSubscriptionId: null,
-              subscriptionEndDate: null
-            })
-            .where(eq(usersTable.email, email));
+        const customer = await stripe.customers.retrieve(subscription.customer);
+        if (customer.email) {
+          const isPro = subscription.status === "active" || subscription.status === "trialing";
+          await db.update(usersTable).set({
+            subscriptionStatus: isPro ? "pro" : "free",
+            subscriptionPlan: isPro ? "pro" : "basic",
+            stripeSubscriptionId: event.type === "customer.subscription.deleted" ? null : subscription.id,
+            subscriptionEndDate: event.type === "customer.subscription.deleted" ? null : new Date(subscription.current_period_end * 1000)
+          }).where(eq(usersTable.email, customer.email));
         }
         break;
       }
-
-      case "invoice.payment_succeeded": {
-        const invoice = event.data.object;
-        const customerId = invoice.customer;
-        const subscriptionId = invoice.subscription;
-
-        if (subscriptionId && customerId) {
-          const stripe = getStripe();
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-          const customer = await stripe.customers.retrieve(customerId);
-          const email = customer.email;
-
-          if (email) {
-            await db
-              .update(usersTable)
-              .set({
-                subscriptionStatus: "pro",
-                subscriptionPlan: "pro",
-                subscriptionEndDate: new Date(subscription.current_period_end * 1000)
-              })
-              .where(eq(usersTable.email, email));
-          }
-        }
-        break;
-      }
-
-      case "invoice.payment_failed": {
-        const invoice = event.data.object;
-        const customerId = invoice.customer;
-
-        const stripe = getStripe();
-        const customer = await stripe.customers.retrieve(customerId);
-        const email = customer.email;
-
-        if (email) {
-          // Optionally handle payment failure
-          // You might want to send an email notification here
-          console.log(`Payment failed for user: ${email}`);
-        }
-        break;
-      }
-
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
     }
 
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error("Webhook error:", error);
-    return NextResponse.json(
-      { error: "Webhook handler failed" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
   }
 }
-

@@ -1,51 +1,29 @@
-import { db } from "@/config/db";
+import { getDb } from "@/config/db";
 import { interviewResultsTable, interviewsTable } from "@/config/schema";
 import { eq, desc } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-// Force dynamic rendering to avoid build-time database connection
 export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url);
         const userEmail = searchParams.get('email');
-        
-        if (!userEmail) {
-            return NextResponse.json({ error: 'Email is required' }, { status: 400 });
-        }
+        if (!userEmail) return NextResponse.json({ error: 'Email is required' }, { status: 400 });
 
-        // Get all interviews created by the user
-        const userInterviews = await db
-            .select()
-            .from(interviewsTable)
-            .where(eq(interviewsTable.createdBy, userEmail));
+        const db = await getDb();
+        const userInterviews = await db.select().from(interviewsTable).where(eq(interviewsTable.createdBy, userEmail));
+        const interviewIds = userInterviews.map(i => i.interview_id);
 
-        const interviewIds = userInterviews.map(interview => interview.interview_id);
+        if (interviewIds.length === 0) return NextResponse.json([]);
 
-        if (interviewIds.length === 0) {
-            return NextResponse.json([]);
-        }
+        const allResults = await db.select().from(interviewResultsTable).orderBy(desc(interviewResultsTable.completed_at));
+        const results = allResults.filter(r => interviewIds.includes(r.interview_id));
 
-        // Get all results and filter in JavaScript (simpler approach)
-        const allResults = await db
-            .select()
-            .from(interviewResultsTable)
-            .orderBy(desc(interviewResultsTable.completed_at));
-
-        // Filter results for user's interviews
-        const results = allResults.filter(result => 
-            interviewIds.includes(result.interview_id)
-        );
-
-        // Join with interview data
-        const resultsWithInterviewData = results.map(result => {
-            const interview = userInterviews.find(i => i.interview_id === result.interview_id);
-            return {
-                ...result,
-                interview: interview || null
-            };
-        });
+        const resultsWithInterviewData = results.map(result => ({
+            ...result,
+            interview: userInterviews.find(i => i.interview_id === result.interview_id) || null
+        }));
 
         return NextResponse.json(resultsWithInterviewData);
     } catch (error) {
@@ -53,4 +31,3 @@ export async function GET(request) {
         return NextResponse.json({ error: 'Failed to fetch interview results' }, { status: 500 });
     }
 }
-
