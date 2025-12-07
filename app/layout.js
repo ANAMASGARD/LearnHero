@@ -6,6 +6,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProviderWrapper } from "@/components/theme-provider";
 import { FloatingThemeToggle } from "@/components/FloatingThemeToggle";
 
+// Force dynamic rendering for all pages (Clerk requires runtime env vars)
+export const dynamic = 'force-dynamic';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,7 +26,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+    >
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
