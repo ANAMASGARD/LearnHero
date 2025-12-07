@@ -74,9 +74,10 @@ let aiInstance = null;
 
 export function getAI() {
   if (!aiInstance) {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const { getEnv } = require('@/lib/secrets');
+    const apiKey = getEnv('GEMINI_API_KEY');
     if (!apiKey) {
-      throw new Error('GEMINI_API_KEY environment variable is not set');
+      throw new Error('GEMINI_API_KEY is not set');
     }
     aiInstance = new GoogleGenAI({
       apiKey: apiKey,

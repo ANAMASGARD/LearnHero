@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
+import { getEnv } from "@/lib/secrets";
 
-// Force dynamic rendering to avoid build-time API initialization
 export const dynamic = 'force-dynamic';
 
 const QUESTIONS_PROMPT = `You are an expert technical interviewer.
@@ -49,7 +49,7 @@ export async function POST(req) {
         console.log('Generating questions with Gemini...');
 
         const genAI = new GoogleGenAI({ 
-            apiKey: process.env.GEMINI_API_KEY 
+            apiKey: getEnv('GEMINI_API_KEY') 
         });
         
         const result = await genAI.models.generateContent({

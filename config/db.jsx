@@ -1,7 +1,7 @@
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
+import { getEnv } from '@/lib/secrets';
 
-// Lazy initialization to avoid build-time errors
 let cachedDb = null;
 
 function getDb() {
@@ -9,10 +9,10 @@ function getDb() {
     return cachedDb;
   }
   
-  const databaseUrl = process.env.DATABASE_URL;
+  const databaseUrl = getEnv('DATABASE_URL');
   
   if (!databaseUrl) {
-    throw new Error('DATABASE_URL environment variable is not set. Please configure it in your environment variables.');
+    throw new Error('DATABASE_URL is not set');
   }
   
   const pg = neon(databaseUrl);
@@ -20,7 +20,6 @@ function getDb() {
   return cachedDb;
 }
 
-// Export db as a proxy that initializes lazily only when accessed at runtime
 export const db = new Proxy({}, {
   get(target, prop) {
     const dbInstance = getDb();

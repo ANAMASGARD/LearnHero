@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
+import { getEnv } from "@/lib/secrets";
 
-// Force dynamic rendering to avoid build-time API initialization
 export const dynamic = 'force-dynamic';
-
-const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
 
 export async function POST(req) {
     try {
         const { topic, category } = await req.json();
+        const UNSPLASH_ACCESS_KEY = getEnv('UNSPLASH_ACCESS_KEY');
 
         if (!UNSPLASH_ACCESS_KEY) {
             console.warn('Unsplash API key not found, using fallback image');

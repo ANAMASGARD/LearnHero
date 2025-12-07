@@ -4,16 +4,15 @@ import Stripe from "stripe";
 import { db } from "@/config/db";
 import { usersTable } from "@/config/schema";
 import { eq } from "drizzle-orm";
+import { getEnv } from "@/lib/secrets";
 
-// Force dynamic rendering to avoid build-time database connection
 export const dynamic = 'force-dynamic';
 
-// Lazy initialization to avoid build-time errors
 let stripeInstance = null;
 
 function getStripe() {
   if (!stripeInstance) {
-    const secretKey = process.env.STRIPE_SECRET_KEY;
+    const secretKey = getEnv('STRIPE_SECRET_KEY');
     if (!secretKey) {
       throw new Error('STRIPE_SECRET_KEY environment variable is not set');
     }

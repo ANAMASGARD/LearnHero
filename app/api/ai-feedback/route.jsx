@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
+import { getEnv } from "@/lib/secrets";
 
-// Force dynamic rendering to avoid build-time API initialization
 export const dynamic = 'force-dynamic';
 
 const FEEDBACK_PROMPT = `{{conversation}}
@@ -39,7 +39,7 @@ export async function POST(req) {
         const FINAL_PROMPT = FEEDBACK_PROMPT.replace("{{conversation}}", JSON.stringify(conversation));
        
         const genAI = new GoogleGenAI({ 
-            apiKey: process.env.GEMINI_API_KEY 
+            apiKey: getEnv('GEMINI_API_KEY') 
         });
         
         const result = await genAI.models.generateContent({

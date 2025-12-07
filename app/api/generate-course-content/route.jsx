@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getAI } from '../generate-course-layout/route';
+import { getEnv } from '@/lib/secrets';
 import axios from 'axios';
 import { db } from '@/config/db';
 import { eq } from 'drizzle-orm';
 import { coursesTable } from '@/config/schema';
 
-// Force dynamic rendering to avoid build-time database connection
 export const dynamic = 'force-dynamic';
 // 2,57,15
 const PROMPT = `Generate content for each topic in HTML format based on the Chapter name and Topics provided.
@@ -163,8 +163,8 @@ export async function POST(req) {
 const YOUTUBE_BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
 const GetYoutubeVideo = async (topic) => {
     try {
-        // Check if YouTube API key exists
-        if (!process.env.YOUTUBE_API_KEY) {
+        const YOUTUBE_API_KEY = getEnv('YOUTUBE_API_KEY');
+        if (!YOUTUBE_API_KEY) {
             console.warn('YouTube API key not configured');
             return [];
         }
@@ -174,7 +174,7 @@ const GetYoutubeVideo = async (topic) => {
             q: topic,
             maxResults: 4,
             type: 'video',
-            key: process.env.YOUTUBE_API_KEY,
+            key: YOUTUBE_API_KEY,
         };
         
         const resp = await axios.get(YOUTUBE_BASE_URL, { params });
