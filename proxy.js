@@ -8,9 +8,9 @@ const isPublicRoute = createRouteMatcher([
   '/'
 ])
 
-// Clerk keys
+// Clerk keys - publishableKey is public and safe to include
 const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || 'pk_test_ZXF1aXBwZWQtbGVtbWluZy02My5jbGVyay5hY2NvdW50cy5kZXYk'
-const secretKey = process.env.CLERK_SECRET_KEY || 'sk_test_7AsqCCswrjsJ5OCSwzBcpHZgtUS4C373FFJOZWwIDe'
+const secretKey = process.env.CLERK_SECRET_KEY
 
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
