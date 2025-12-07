@@ -4,7 +4,10 @@ frontend:
     preBuild:
       commands:
         - npm ci
-        # Create runtime config with environment variables
+    build:
+      commands:
+        - npm run build
+        # Create runtime config with environment variables AFTER build
         - |
           cat > runtime-config.json << EOF
           {
@@ -24,15 +27,15 @@ frontend:
             "NEXT_PUBLIC_VAPI_API_KEY": "$NEXT_PUBLIC_VAPI_API_KEY"
           }
           EOF
-    build:
-      commands:
-        - npm run build
-        # Copy runtime config to .next folder so it's included in deployment
+        # Copy to multiple locations for SSR Lambda
         - cp runtime-config.json .next/
+        - cp runtime-config.json .next/server/
+        - cp runtime-config.json .next/standalone/ 2>/dev/null || true
   artifacts:
     baseDirectory: .next
     files:
       - '**/*'
+      - '../runtime-config.json'
   cache:
     paths:
       - node_modules/**/*
